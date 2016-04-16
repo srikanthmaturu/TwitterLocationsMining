@@ -14,9 +14,9 @@ import java.util.HashMap;
  * @author Srikanth
  */
 public class Place_dbo {
-     public final static String fieldnames[] = {"id","name","full_name","country","country_code","place_type","url",
-            "boundingbox_coord","centroid_lat","centroid_lon","max_id","since_id"};
-     public final static int types[] = {5,2,2,2,2,2,2,2,1,1,5,5};
+     public final static String fieldnames[] = {"id","place_id","name","full_name","country","country_code","place_type","url",
+            "contained_within_place","boundingbox_coord","centroid_lon","centroid_lat","max_id","since_id"};
+     public final static int types[] = {5,5,2,2,2,2,2,2,2,2,1,1,5,5};
      public final static int nooffields = fieldnames.length;
      public Datatype values[] = new Datatype[fieldnames.length];
      public  final static String tablename = "`tweethitter`.`places`";

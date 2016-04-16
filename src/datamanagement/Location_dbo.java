@@ -5,7 +5,7 @@
  */
 package datamanagement;
 
-import static datamanagement.Hashtag_dbo.fieldnames;
+
 import java.util.HashMap;
 
 /**
