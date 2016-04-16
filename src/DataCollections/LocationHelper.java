@@ -52,7 +52,13 @@ public class LocationHelper {
         }
     }
     
-   
+    public Location_dbo[] selectLocations(boolean[] selected, String whereclause, int min_id, int count) {
+        return LocationsTable.select(selected, whereclause, min_id, count);
+    }
+    
+    public Location_dbo[] select(String whereclause, int min_id, int count) {
+       return LocationsTable.select(whereclause, min_id, count);
+    }
     
     public Location_dbo convertLocationToLocation_dbo(Location l) {
         
@@ -68,6 +74,8 @@ public class LocationHelper {
         //LogPrinter.printLog("Conversion of current location to database object complete");
         return loc;
     }
+    
+    
     
     
     
