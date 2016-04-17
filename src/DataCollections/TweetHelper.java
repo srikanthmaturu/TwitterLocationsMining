@@ -5,10 +5,59 @@
  */
 package DataCollections;
 
+import datamanagement.Tweet_dbo;
+import datamanagement.TweetsTable;
+import org.json.simple.JSONArray;
+import twitter4j.HashtagEntity;
+import twitter4j.Status;
+import twitter4j.UserMentionEntity;
+
 /**
  *
  * @author Srikanth
  */
 public class TweetHelper {
+    
+    public Tweet_dbo[] selectTweets(boolean[] selected,String whereclause, int min_id, int count) {
+        return TweetsTable.select(selected, whereclause, min_id, count);
+    }
+    
+    public Tweet_dbo convertStatusToTweet_dbo(Status s) {
+        Tweet_dbo tweet = new Tweet_dbo();
+        tweet.values[Tweet_dbo.map.get("tweet_id")].setValue(String.valueOf(s.getId()));
+        tweet.values[Tweet_dbo.map.get("user_id")].setValue(String.valueOf(s.getUser().getId()));
+        tweet.values[Tweet_dbo.map.get("user_screenname")].setValue(s.getUser().getScreenName());
+        tweet.values[Tweet_dbo.map.get("lon")].setValue(String.valueOf(s.getGeoLocation().getLongitude()));
+        tweet.values[Tweet_dbo.map.get("lat")].setValue(String.valueOf(s.getGeoLocation().getLatitude()));
+        
+        tweet.values[Tweet_dbo.map.get("f_search")].setValue("true");
+        tweet.values[Tweet_dbo.map.get("text")].setValue(s.getText());
+        tweet.values[Tweet_dbo.map.get("hashtags")].setValue(stringifyHashtags(s.getHashtagEntities()));
+        tweet.values[Tweet_dbo.map.get("mentions")].setValue(stringiyMentions(s.getUserMentionEntities()));
+        tweet.values[Tweet_dbo.map.get("timestamp")].setValue(String.valueOf(s.getCreatedAt()));
+        tweet.values[Tweet_dbo.map.get("favouritecount")].setValue(String.valueOf(s.getFavoriteCount()));
+        tweet.values[Tweet_dbo.map.get("retweetcount")].setValue(String.valueOf(s.getRetweetCount()));
+        return tweet;
+    }
+    
+    
+    
+    public String stringifyHashtags(HashtagEntity[] hashtags) {
+        JSONArray jsonarray = new JSONArray();
+        for(HashtagEntity hashtag:hashtags){
+            jsonarray.add(hashtag.getText());
+        }
+        return jsonarray.toJSONString();
+    }
+    
+    public String stringiyMentions(UserMentionEntity[] mentions) {
+        JSONArray jsonarray = new JSONArray();
+        for(UserMentionEntity mention:mentions){
+            jsonarray.add(mention.getId());
+        }
+        
+        return jsonarray.toJSONString();
+    }
+    
     
 }
