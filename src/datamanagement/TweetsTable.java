@@ -38,7 +38,10 @@ public class TweetsTable {
          int index = 0;
          while(rs.next()){
           for(int i=0;i<Tweet_dbo.nooffields;i++){
-                  tweets[index].values[i].setValue(rs.getString(i+1));
+              String value = rs.getString(i+1);
+                  if(value!=null) {
+                  tweets[index].values[i].setValue(value);
+                  }
           }
         }
         }
@@ -81,7 +84,10 @@ public class TweetsTable {
          while(rs.next()){
           for(int i=0;i<Tweet_dbo.nooffields;i++){
               if(selected[i]){
-                  tweets[index].values[i].setValue(rs.getString(i+1));
+                  String value = rs.getString(i+1);
+                  if(value!=null) {
+                  tweets[index].values[i].setValue(value);
+                  }
               }
           }
         }

@@ -16,9 +16,9 @@ import java.util.HashMap;
 public class Hashtag_dbo {
     
     
-      public final static String fieldnames[] = {"id","hashtag","nooftweets","popular","ftrendsres","ftweets","fusers"
-        ,"fgeoloc","pop_location","lat","lon","max_id","since_id"};
-     public final static int types[] = {5,2,5,3,3,3,3,3,2,1,1,5,5};
+      public final static String fieldnames[] = {"id","hashtag_popterm","nooftweets","popular","ftrendsres","ftweets","fusers"
+        ,"fgeoloc","pop_location","lat","lon","max_id","since_id","processed"};
+     public final static int types[] = {5,2,5,3,3,3,3,3,2,1,1,5,5,3};
      public final static int nooffields = fieldnames.length;
      public Datatype values[] = new Datatype[fieldnames.length];
      public static final String tablename = "`tweethitter`.`hashtags`";

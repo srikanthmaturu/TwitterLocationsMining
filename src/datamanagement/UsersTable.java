@@ -107,7 +107,10 @@ public class UsersTable {
          int index = 0;
          while(rs.next()){
           for(int i=0;i<User_dbo.nooffields;i++){
-                  users[index].values[i].setValue(rs.getString(i+1));
+              String value = rs.getString(i+1);
+                  if(value!=null) {
+                  users[index].values[i].setValue(value);
+                  }
           }
         }
         }
@@ -150,7 +153,10 @@ public class UsersTable {
          while(rs.next()){
           for(int i=0;i<User_dbo.nooffields;i++){
               if(selected[i]){
-                  users[index].values[i].setValue(rs.getString(i+1));
+                  String value = rs.getString(i+1);
+                  if(value!=null) {
+                  users[index].values[i].setValue(value);
+                  }
               }
           }
         }
@@ -159,6 +165,20 @@ public class UsersTable {
             e.printStackTrace();
         }
         return users;
+    }
+    
+    public static void delete(long user_id){
+        String statement = "DELETE FROM TABLE "+User_dbo.tablename+" where user_id = "+user_id;
+        
+        try {
+            PreparedStatement ps = connection.prepareStatement(statement);
+            ps.executeUpdate();
+            ps.close();
+        }
+        catch(Exception e){
+         
+        }
+        
     }
     
     
@@ -188,15 +208,8 @@ public class UsersTable {
             ps.close();
         }
         catch(Exception e){
-            e.printStackTrace();
+           
         }
     }
-    
-    
-    
-    
-    
-    
-    
     
 }

@@ -14,10 +14,10 @@ import java.util.HashMap;
  * @author Srikanth
  */
 public class User_dbo {
-    public static final String fieldnames[] = {"id","name","screename","lang","location","geoenabled","timezone","countrycodes","profileurl",
+    public static final String fieldnames[] = {"id","user_id","name","screename","lang","location","geoenabled","timezone","profileurl",
                             "protected","verified","description","createddate","probased_geoinfo","descbased_geoinfo","probased_lat","probased_lon",
                             "tweetbased_geoinfo","tweetbased_lat","tweetbased_lon","estimated_geoinfo","estimated_lat","estimated_lon","totaltweets"};
-     public static final int types[] = {0,2,2,2,2,3,2,2,2,3,3,2,4,3,3,1,1,3,1,1,3,1,1,5};
+     public static final int types[] = {0,5,2,2,2,2,3,2,2,3,3,2,4,3,3,1,1,3,1,1,3,1,1,5};
      public static final int nooffields = fieldnames.length;
      public Datatype values[] = new Datatype[fieldnames.length];
      public static final String tablename = "`tweethitter`.`users`";

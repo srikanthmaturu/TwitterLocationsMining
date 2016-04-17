@@ -8,6 +8,7 @@ package DataCollections;
 import datamanagement.User_dbo;
 import datamanagement.UsersTable;
 import twitter4j.User;
+import twitter4j.UserMentionEntity;
 
 /**
  *
@@ -23,6 +24,7 @@ public class UserHelper {
     public User_dbo convertUserToUser_dbo(User user){
         
         User_dbo u = new User_dbo();
+        u.values[User_dbo.map.get("user_id")].setValue(String.valueOf(user.getId()));
         u.values[User_dbo.map.get("name")].setValue(user.getName());
         u.values[User_dbo.map.get("screename")].setValue(user.getScreenName());
         u.values[User_dbo.map.get("lang")].setValue(user.getLang());
@@ -41,10 +43,21 @@ public class UserHelper {
             u.values[User_dbo.map.get("probased_lat")].setValue(String.valueOf(user.isVerified()));
             u.values[User_dbo.map.get("probased_lon")].setValue(String.valueOf(user.isVerified()));
         }
-        
+        u.values[User_dbo.map.get("udetails_processed")].setValue(String.valueOf(true));
         u.values[User_dbo.map.get("totaltweets")].setValue(String.valueOf(user.getStatusesCount()));
         return u;
     }
+    
+     public User_dbo convertMentionedUserToUser_dbo(UserMentionEntity user){
+        
+        User_dbo u = new User_dbo();
+        u.values[User_dbo.map.get("user_id")].setValue(String.valueOf(user.getId()));
+        u.values[User_dbo.map.get("name")].setValue(user.getName());
+        u.values[User_dbo.map.get("screename")].setValue(user.getScreenName());
+        return u;
+    }
+    
+    
     
     
 }

@@ -43,7 +43,10 @@ public class LocationsTable {
          int index = 0;
          while(rs.next()){
           for(int i=0;i<Location_dbo.nooffields;i++){
-                  locs[index].values[i].setValue(rs.getString(i+1));
+                  String value = rs.getString(i+1);
+                  if(value!=null) {
+                  locs[index].values[i].setValue(value);
+                  }
           }
         }
         }
@@ -88,7 +91,10 @@ public class LocationsTable {
          while(rs.next()){
           for(int i=0;i<Location_dbo.nooffields;i++){
               if(selected[i]){
-                  locs[index].values[i].setValue(rs.getString(i+1));
+                  String value = rs.getString(i+1);
+                  if(value!=null) {
+                  locs[index].values[i].setValue(value);
+                  }
               }
           }
         }

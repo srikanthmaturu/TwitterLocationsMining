@@ -6,6 +6,7 @@
 package DataCollections;
 
 
+import DataAccess.TwitterResources;
 import Logger.LogPrinter;
 import java.sql.SQLException;
 
@@ -33,7 +34,8 @@ public class TrendsCollections {
     HashTagHelper htaghelper;
     
     public TrendsCollections() {
-        twitter = TwitterFactory.getSingleton();
+        
+        twitter = TwitterResources.getTwitterSingleton();
         trendsresources = twitter.trends();
         lochelper =new LocationHelper();
         htaghelper = new HashTagHelper();

@@ -38,7 +38,10 @@ public class PlacesTable {
          int index = 0;
          while(rs.next()){
           for(int i=0;i<Place_dbo.nooffields;i++){
-                  places[index].values[i].setValue(rs.getString(i+1));
+              String value = rs.getString(i+1);
+                  if(value!=null) {
+                  places[index].values[i].setValue(value);
+                  }
           }
         }
         }
@@ -81,7 +84,10 @@ public class PlacesTable {
          while(rs.next()){
           for(int i=0;i<Place_dbo.nooffields;i++){
               if(selected[i]){
-                  places[index].values[i].setValue(rs.getString(i+1));
+                  String value = rs.getString(i+1);
+                  if(value!=null) {
+                  places[index].values[i].setValue(value);
+                  }
               }
           }
         }

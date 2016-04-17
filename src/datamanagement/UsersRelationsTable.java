@@ -38,7 +38,10 @@ public class UsersRelationsTable {
          int index = 0;
          while(rs.next()){
           for(int i=0;i<UserRelation_dbo.nooffields;i++){
-                  urelations[index].values[i].setValue(rs.getString(i+1));
+                  String value = rs.getString(i+1);
+                  if(value!=null) {
+                  urelations[index].values[i].setValue(value);
+                  }
           }
         }
         }
@@ -81,7 +84,10 @@ public class UsersRelationsTable {
          while(rs.next()){
           for(int i=0;i<UserRelation_dbo.nooffields;i++){
               if(selected[i]){
-                  urelations[index].values[i].setValue(rs.getString(i+1));
+                  String value = rs.getString(i+1);
+                  if(value!=null) {
+                  urelations[index].values[i].setValue(value);
+                  }
               }
           }
         }

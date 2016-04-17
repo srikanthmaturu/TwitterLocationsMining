@@ -20,7 +20,7 @@ public class HashTagTable {
     
     
     
-    public static Hashtag_dbo[] select(String whereclause, int min_id, int count) {
+    public static Hashtag_dbo[] select(String whereclause, long min_id, int count) {
         Hashtag_dbo htags[] = null;
         String statement = "SELECT * ";
         statement =statement.concat(" from "+Hashtag_dbo.tablename);
@@ -40,7 +40,10 @@ public class HashTagTable {
          int index = 0;
          while(rs.next()){
           for(int i=0;i<Hashtag_dbo.nooffields;i++){
-                  htags[index].values[i].setValue(rs.getString(i+1));
+                  String value = rs.getString(i+1);
+                  if(value!=null) {
+                  htags[index].values[i].setValue(value);
+                  }
           }
         }
         }
@@ -50,7 +53,7 @@ public class HashTagTable {
         return htags;
     }
     
-    public static Hashtag_dbo[] select(boolean[] selected, String whereclause, int min_id, int count) {
+    public static Hashtag_dbo[] select(boolean[] selected, String whereclause, long min_id, int count) {
         Hashtag_dbo htags[] = null;
         String statement = "SELECT ";
         boolean firstentry = true;
@@ -83,7 +86,9 @@ public class HashTagTable {
          while(rs.next()){
           for(int i=0;i<Hashtag_dbo.nooffields;i++){
               if(selected[i]){
-                  htags[index].values[i].setValue(rs.getString(i+1));
+                  String value = rs.getString(i+1);
+                  if(value!=null)
+                  htags[index].values[i].setValue(value);
               }
           }
         }
