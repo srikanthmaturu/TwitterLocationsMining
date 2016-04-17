@@ -95,20 +95,35 @@ public class HashTagTable {
     }
     
     public static void insert(Hashtag_dbo htag) {
-        String statement = "Insert into "+Hashtag_dbo.tablename+" ";
-        String values = "values(";
+        
+        String statement = "insert into "+Hashtag_dbo.tablename+"(";
+        String values = " values(";
         boolean firstentry = true;
-        for(int i=0;i<Hashtag_dbo.nooffields;i++){
-            if(!firstentry){
+        for(int i=0; i<Hashtag_dbo.nooffields;i++) {
+            if(htag.values[i].used){
+            if(!firstentry) {
                 statement = statement.concat(",");
+                values = values.concat(",");
             }
             else{
                 firstentry = false;
             }
-            statement = statement.concat(htag.values[i].getSQLStringValue());
-        
+            statement = statement.concat(""+Hashtag_dbo.fieldnames[i]+"");
+            values = values.concat(htag.values[i].getSQLStringValue());
         }
-        statement = statement.concat(");");
+          if(i==Hashtag_dbo.nooffields-1) {
+              statement = statement.concat(") ");
+              values = values.concat(");");
+        }
+        }
+        try {
+        PreparedStatement ps = connection.prepareStatement(statement+values);
+        ps.executeUpdate();
+        ps.close();
+        }
+        catch(Exception e){
+            
+        } 
     }
     
     public static void insert(Hashtag_dbo htag,boolean[] selection) {

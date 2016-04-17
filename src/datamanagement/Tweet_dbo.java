@@ -16,10 +16,9 @@ import java.util.HashMap;
 public class Tweet_dbo {
     
     
-       public final static String fieldnames[] = {"id","text","timestamp","entrytime","searchterm","favouritecount","retweetcount"
-        ,"tweet_id","hastags","mentions","inreply_to_user_id","inreply_to_screenname","inreply_to_statusid"
-        ,"isretweet","user_id","user_screenname","lat","lon"};
-     public final static int types[] = {5,2,2,2,2,5,5,5,2,2,5,2,5,3,5,2,1,1};
+       public final static String fieldnames[] = {"id","tweet_id","user_id","user_screenname","lon","lat","f_usertimeline"
+       ,"f_search","text","hashtags","mentions","timestamp","searchterm","favouritecount","retweetcount","processed"};
+     public final static int types[] = {5,5,5,2,1,1,3,3,2,2,2,4,2,5,5,3};
      public final static int nooffields = fieldnames.length;
      public Datatype values[] = new Datatype[fieldnames.length];
      public static final String tablename = "`tweethitter`.`tweets`";

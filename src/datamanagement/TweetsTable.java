@@ -93,20 +93,34 @@ public class TweetsTable {
     }
     
     public static void insert(Tweet_dbo t) {
-        String statement = "Insert into "+Tweet_dbo.tablename;
-        String values = "values(";
+        String statement = "insert into "+Tweet_dbo.tablename+"(";
+        String values = " values(";
         boolean firstentry = true;
-        for(int i=0;i<Tweet_dbo.nooffields;i++){
-            if(!firstentry){
-               statement =  statement.concat(",");
+        for(int i=0; i<Tweet_dbo.nooffields;i++) {
+            if(t.values[i].used){
+            if(!firstentry) {
+                statement = statement.concat(",");
+                values = values.concat(",");
             }
             else{
                 firstentry = false;
             }
-            statement = statement.concat(t.values[i].getSQLStringValue());
-        
+            statement = statement.concat(""+Tweet_dbo.fieldnames[i]+"");
+            values = values.concat(t.values[i].getSQLStringValue());
         }
-        statement = statement.concat(");");
+          if(i==Tweet_dbo.nooffields-1) {
+              statement = statement.concat(") ");
+             values =  values.concat(");");
+        }
+        }
+        try {
+        PreparedStatement ps = connection.prepareStatement(statement+values);
+        ps.executeUpdate();
+        ps.close();
+        }
+        catch(Exception e){
+            
+        }
         
     }
     

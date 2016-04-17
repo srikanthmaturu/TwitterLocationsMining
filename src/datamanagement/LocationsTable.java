@@ -101,20 +101,34 @@ public class LocationsTable {
     
     
     public static void insert(Location_dbo loc) {
-        String statement = "Insert into "+Location_dbo.tablename+" ";
-     
+        String statement = "insert into "+Location_dbo.tablename+"(";
+        String values = " values(";
         boolean firstentry = true;
-        for(int i=0;i<Location_dbo.nooffields;i++){
-            if(!firstentry){
-               statement =  statement.concat(",");
+        for(int i=0; i<Location_dbo.nooffields;i++) {
+            if(loc.values[i].used){
+            if(!firstentry) {
+                statement = statement.concat(",");
+                values =values.concat(",");
             }
             else{
                 firstentry = false;
             }
-            statement = statement.concat(loc.values[i].getSQLStringValue());
-        
+            statement = statement.concat(""+Location_dbo.fieldnames[i]+"");
+            values =values.concat(loc.values[i].getSQLStringValue());
         }
-        statement = statement.concat(");");
+          if(i==Location_dbo.nooffields-1) {
+              statement = statement.concat(") ");
+             values = values.concat(");");
+        }
+        }
+        try {
+        PreparedStatement ps = connection.prepareStatement(statement+values);
+        ps.executeUpdate();
+        ps.close();
+        }
+        catch(Exception e){
+           
+        }
     }
     
     public static void insert(Location_dbo loc,boolean[] selection) {

@@ -20,21 +20,35 @@ public class UsersTable {
     
     
     
-    public static void insert(User_dbo r) {
-        String statement = "Insert into "+User_dbo.tablename;
-        String values = "values(";
+    public static void insert(User_dbo us) {
+        String statement = "insert into "+User_dbo.tablename+"(";
+        String values = " values(";
         boolean firstentry = true;
-        for(int i=0;i<User_dbo.nooffields;i++){
-            if(!firstentry){
-               statement =  statement.concat(",");
+        for(int i=0; i<User_dbo.nooffields;i++) {
+            if(us.values[i].used){
+            if(!firstentry) {
+                statement = statement.concat(",");
+                values = values.concat(",");
             }
             else{
                 firstentry = false;
             }
-           statement =  statement.concat(r.values[i].getSQLStringValue());
-        
+            statement = statement.concat(""+User_dbo.fieldnames[i]+"");
+            values = values.concat(us.values[i].getSQLStringValue());
         }
-        statement = statement.concat(");");
+          if(i==User_dbo.nooffields-1) {
+              statement = statement.concat(") ");
+              values = values.concat(");");
+        }
+        }
+        try {
+        PreparedStatement ps = connection.prepareStatement(statement+values);
+        ps.executeUpdate();
+        ps.close();
+        }
+        catch(Exception e){
+           
+        }
         
     }
     

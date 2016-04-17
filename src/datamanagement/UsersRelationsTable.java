@@ -93,20 +93,34 @@ public class UsersRelationsTable {
     }
     
     public static void insert(UserRelation_dbo r) {
-        String statement = "Insert into "+UserRelation_dbo.tablename;
-        String values = "values(";
+         String statement = "insert into "+UserRelation_dbo.tablename+"(";
+        String values = " values(";
         boolean firstentry = true;
-        for(int i=0;i<UserRelation_dbo.nooffields;i++){
-            if(!firstentry){
-               statement =  statement.concat(",");
+        for(int i=0; i<UserRelation_dbo.nooffields;i++) {
+            if(r.values[i].used){
+            if(!firstentry) {
+                statement = statement.concat(",");
+               values =  values.concat(",");
             }
             else{
                 firstentry = false;
             }
-            statement = statement.concat(r.values[i].getSQLStringValue());
-        
+            statement = statement.concat(""+UserRelation_dbo.fieldnames[i]+"");
+            values = values.concat(r.values[i].getSQLStringValue());
         }
-        statement = statement.concat(");");
+          if(i==UserRelation_dbo.nooffields-1) {
+              statement = statement.concat(") ");
+              values = values.concat(");");
+        }
+        }
+        try {
+        PreparedStatement ps = connection.prepareStatement(statement+values);
+        ps.executeUpdate();
+        ps.close();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }  
         
     }
     

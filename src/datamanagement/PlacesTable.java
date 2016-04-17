@@ -92,21 +92,35 @@ public class PlacesTable {
         return places;
     }
     
-    public static void insert(Place_dbo p) {
-        String statement = "Insert into "+Place_dbo.tablename;
-        String values = "values(";
+    public static void insert(Place_dbo place) {
+        String statement = "insert into "+Place_dbo.tablename+"(";
+        String values = " values(";
         boolean firstentry = true;
-        for(int i=0;i<Place_dbo.nooffields;i++){
-            if(!firstentry){
+        for(int i=0; i<Place_dbo.nooffields;i++) {
+            if(place.values[i].used){
+            if(!firstentry) {
                 statement = statement.concat(",");
+                values = values.concat(",");
             }
             else{
                 firstentry = false;
             }
-            statement = statement.concat(p.values[i].getSQLStringValue());
-        
+            statement = statement.concat(""+Place_dbo.fieldnames[i]+"");
+           values =  values.concat(place.values[i].getSQLStringValue());
         }
-        statement = statement.concat(");");
+          if(i==Place_dbo.nooffields-1) {
+              statement = statement.concat(") ");
+              values = values.concat(");");
+        }
+        }
+        try {
+        PreparedStatement ps = connection.prepareStatement(statement+values);
+        ps.executeUpdate();
+        ps.close();
+        }
+        catch(Exception e){
+           
+        }
         
     }
     
