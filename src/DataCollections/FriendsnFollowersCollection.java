@@ -100,11 +100,11 @@ public class FriendsnFollowersCollection {
                 else{
                     if(!users[0].values[User_dbo.map.get("udetails_processed")].bool){
                         UsersTable.delete(userdbo.values[User_dbo.map.get("user_id")].lnumber);
+                        userdbo.values[User_dbo.map.get("udetails_processed")].setValue("true");
                         UsersTable.insert(userdbo);
                     }
                 }
             }
-            
         }
     }
      
