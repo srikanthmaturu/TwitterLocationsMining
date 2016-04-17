@@ -87,7 +87,7 @@ public class UsersTable {
     
     
     
-    public static User_dbo[] select(String whereclause, int min_id, int count) {
+    public static User_dbo[] select(String whereclause, long min_id, int count) {
         User_dbo users[] = null;
         String statement = "SELECT * ";
        statement =  statement.concat(" from "+User_dbo.tablename);
@@ -120,7 +120,7 @@ public class UsersTable {
         return users;
     }
     
-    public static User_dbo[] select(boolean[] selected, String whereclause, int min_id, int count) {
+    public static User_dbo[] select(boolean[] selected, String whereclause, long min_id, int count) {
         User_dbo users[] = null;
         String statement = "SELECT ";
         boolean firstentry = true;
@@ -187,6 +187,36 @@ public class UsersTable {
         boolean firstentry = true;
         for(int i=0; i<User_dbo.nooffields;i++){
             if(selected[i]){
+                if(!firstentry){
+                    statement = statement.concat(",");
+                }
+                else{
+                    statement = statement.concat(" set ");
+                    firstentry = false;
+                }
+                statement = statement.concat(User_dbo.fieldnames[i]+"="+user.values[i].getSQLStringValue());
+            }
+        }
+        if(whereclause!=null){
+        statement = statement.concat(" where ");
+        statement = statement.concat(whereclause);
+        }
+        statement = statement.concat(";");
+        try {
+            PreparedStatement ps = connection.prepareStatement(statement);
+            ps.executeUpdate();
+            ps.close();
+        }
+        catch(Exception e){
+           
+        }
+    }
+    
+    public static void update(User_dbo user, String whereclause) {
+        String statement = "UPDATE "+User_dbo.tablename;
+        boolean firstentry = true;
+        for(int i=0; i<User_dbo.nooffields;i++){
+            if(user.values[i].used){
                 if(!firstentry){
                     statement = statement.concat(",");
                 }
