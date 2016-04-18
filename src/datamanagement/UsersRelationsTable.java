@@ -18,7 +18,7 @@ import java.sql.ResultSet;
 public class UsersRelationsTable {
     public static Connection connection;
     
-    public static UserRelation_dbo[] select(String whereclause, int min_id, int count) {
+    public static UserRelation_dbo[] select(String whereclause, long min_id, int count) {
         UserRelation_dbo urelations[] = null;
         String statement = "SELECT * ";
         statement = statement.concat(" from "+UserRelation_dbo.tablename);
@@ -51,7 +51,7 @@ public class UsersRelationsTable {
         return urelations;
     }
     
-    public static UserRelation_dbo[] select(boolean[] selected, String whereclause, int min_id, int count) {
+    public static UserRelation_dbo[] select(boolean[] selected, String whereclause, long min_id, int count) {
         UserRelation_dbo urelations[] = null;
         String statement = "SELECT ";
         boolean firstentry = true;

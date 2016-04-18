@@ -8,6 +8,8 @@ package DataCollections;
 import datamanagement.UserRelation_dbo;
 import datamanagement.User_dbo;
 import datamanagement.UsersRelationsTable;
+import java.util.ArrayList;
+
 
 /**
  *
@@ -55,6 +57,26 @@ public class UserRelationsHelper {
         {
             return null;
         }
+    }
+    
+    public UserRelation_dbo[] getEdges(User_dbo user){
+        ArrayList<UserRelation_dbo> relationslist = new ArrayList<>();
+        String whereclause = " (( fu_id = "+user.values[User_dbo.map.get("user_id")].lnumber+") or (su_id = "+user.values[User_dbo.map.get("user_id")].lnumber+"))";
+        boolean available = true;
+        long min_id = 0;
+        int count = 100;
+        while(available){
+        UserRelation_dbo[] relations = UsersRelationsTable.select(whereclause, min_id, count);
+        if(relations.length==0) {
+            available = false;
+            continue;
+        }
+        for(int index =0; index < relations.length; index++) {
+        relationslist.add(relations[index]);
+        }
+        min_id = relations[relations.length-1].values[UserRelation_dbo.map.get("id")].lnumber;
+         }
+    return (UserRelation_dbo[])relationslist.toArray();
     }
     
 }
