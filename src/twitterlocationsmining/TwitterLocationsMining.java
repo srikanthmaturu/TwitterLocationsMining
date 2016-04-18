@@ -16,16 +16,20 @@ public class TwitterLocationsMining {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
     
-      
-          TrendsCollections tcht = new TrendsCollections();
-        tcht.collectCurrentTrendingLocations();
+    public UserRelationsHelper userrelationhelper;
+    public UserHelper userhelper;
+    
+    public TwitterLocationsMining() {
+        userrelationhelper = new UserRelationsHelper();
+        userhelper = new UserHelper();
+    }
+    public static void main(String[] args) {
+        TwitterLocationsMining locationminer = new TwitterLocationsMining();  
     }
     
     void estimator() {
         
     }
-    
     
 }

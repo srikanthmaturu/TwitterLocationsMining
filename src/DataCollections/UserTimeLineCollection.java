@@ -34,7 +34,7 @@ public class UserTimeLineCollection {
         useredgecollections = new Users_EdgesCollectionFromTweets();
     }
     
-    void collect_InsertTimeLineOfUser(User_dbo user) {
+    public void collect_InsertTimeLineOfUser(User_dbo user) {
         
         Paging p = new Paging();
         int count = 20;
@@ -113,7 +113,7 @@ public class UserTimeLineCollection {
         }
     }
     
-    void startProcessForTimeLineCollectionOfUsers(){
+    public void startProcessForTimeLineCollectionOfUsers(){
         User_dbo[] users;
         int count = 100;
         long min_id = 0;
