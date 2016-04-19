@@ -115,9 +115,10 @@ public class UsersTable {
         }
         }
         catch(Exception e){
-            e.printStackTrace();
+           
         }
         return users;
+        
     }
     
     public static User_dbo[] select(boolean[] selected, String whereclause, long min_id, int count) {
