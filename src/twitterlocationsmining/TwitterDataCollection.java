@@ -17,15 +17,30 @@ import DataCollections.UserTimeLineCollection;
 public class TwitterDataCollection {
 
     
-public static void main(String[] args){
-        TrendsCollections tcht = new TrendsCollections();
+public static void main(String[] args) throws InterruptedException{
+   
+          FriendsnFollowersCollection friendscoll = new FriendsnFollowersCollection();
+        friendscoll.updateDatabasewithFriends_followers();
+        
+}
+
+public void otherSteps() throws InterruptedException{
+    TrendsCollections tcht = new TrendsCollections();
         tcht.collectCurrentTrendingLocations();
+        
         TweetCollections_HashTags tweetcol_fhtags = new TweetCollections_HashTags();
+        try {
         tweetcol_fhtags.updateTweetsCollectedfromHashTags();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+    
         FriendsnFollowersCollection friendscoll = new FriendsnFollowersCollection();
         friendscoll.updateDatabasewithFriends_followers();
         UserTimeLineCollection timelinecoll = new UserTimeLineCollection();
         timelinecoll.startProcessForTimeLineCollectionOfUsers();
+    
 }
     
 }

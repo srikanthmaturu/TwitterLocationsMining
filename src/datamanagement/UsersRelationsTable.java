@@ -10,6 +10,7 @@ import static datamanagement.UsersTable.connection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 /**
  *
@@ -19,7 +20,7 @@ public class UsersRelationsTable {
     public static Connection connection;
     
     public static UserRelation_dbo[] select(String whereclause, long min_id, int count) {
-        UserRelation_dbo urelations[] = null;
+        ArrayList<UserRelation_dbo> urelations = new ArrayList<UserRelation_dbo>();
         String statement = "SELECT * ";
         statement = statement.concat(" from "+UserRelation_dbo.tablename);
         if(whereclause!=null){
@@ -34,25 +35,31 @@ public class UsersRelationsTable {
         try{
         PreparedStatement ps = connection.prepareStatement(statement);
          rs = ps.executeQuery();
-         urelations = new UserRelation_dbo[rs.getFetchSize()];
+         
          int index = 0;
          while(rs.next()){
+           UserRelation_dbo relation = new UserRelation_dbo();
           for(int i=0;i<UserRelation_dbo.nooffields;i++){
                   String value = rs.getString(i+1);
                   if(value!=null) {
-                  urelations[index].values[i].setValue(value);
+                  relation.values[i].setValue(value);
                   }
           }
+          urelations.add(relation);
         }
         }
         catch(Exception e){
             e.printStackTrace();
         }
-        return urelations;
+         UserRelation_dbo[] relationsarray = new UserRelation_dbo[urelations.size()];
+        for(int i=0; i<urelations.size();i++){
+            relationsarray[i] = urelations.get(i);
+        }
+        return relationsarray;
     }
     
     public static UserRelation_dbo[] select(boolean[] selected, String whereclause, long min_id, int count) {
-        UserRelation_dbo urelations[] = null;
+        ArrayList<UserRelation_dbo> urelations = new ArrayList<UserRelation_dbo>();
         String statement = "SELECT ";
         boolean firstentry = true;
         for(int i=0; i<UserRelation_dbo.nooffields;i++)
@@ -78,24 +85,30 @@ public class UsersRelationsTable {
         try{
         PreparedStatement ps = connection.prepareStatement(statement);
          rs = ps.executeQuery();
-         urelations = new UserRelation_dbo[rs.getFetchSize()];
+         
          int index = 0;
          
          while(rs.next()){
+             UserRelation_dbo relation = new UserRelation_dbo();
           for(int i=0;i<UserRelation_dbo.nooffields;i++){
               if(selected[i]){
                   String value = rs.getString(i+1);
                   if(value!=null) {
-                  urelations[index].values[i].setValue(value);
+                  relation.values[i].setValue(value);
                   }
               }
           }
+          urelations.add(relation);
         }
         }
         catch(Exception e){
             e.printStackTrace();
         }
-        return urelations;
+        UserRelation_dbo[] relationsarray = new UserRelation_dbo[urelations.size()];
+        for(int i=0; i<urelations.size();i++){
+            relationsarray[i] = urelations.get(i);
+        }
+        return relationsarray;
     }
     
     public static void insert(UserRelation_dbo r) {
@@ -121,6 +134,7 @@ public class UsersRelationsTable {
         }
         try {
         PreparedStatement ps = connection.prepareStatement(statement+values);
+        //Logger.LogPrinter.printLog(ps.toString());
         ps.executeUpdate();
         ps.close();
         }
@@ -187,7 +201,7 @@ public class UsersRelationsTable {
             ps.close();
         }
         catch(Exception e){
-           
+            e.printStackTrace();
         }
     }
     

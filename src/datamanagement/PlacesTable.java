@@ -9,6 +9,7 @@ package datamanagement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 /**
  *
@@ -19,7 +20,7 @@ public class PlacesTable {
     
     
     public static Place_dbo[] select(String whereclause, int min_id, int count) {
-        Place_dbo places[] = null;
+        ArrayList<Place_dbo> places = new ArrayList<Place_dbo>();
         String statement = "SELECT * ";
         statement = statement.concat(" from "+Place_dbo.tablename);
         if(whereclause!=null){
@@ -34,25 +35,31 @@ public class PlacesTable {
         try{
         PreparedStatement ps = connection.prepareStatement(statement);
          rs = ps.executeQuery();
-         places = new Place_dbo[rs.getFetchSize()];
+         
          int index = 0;
          while(rs.next()){
+             Place_dbo place = new Place_dbo();
           for(int i=0;i<Place_dbo.nooffields;i++){
               String value = rs.getString(i+1);
                   if(value!=null) {
-                  places[index].values[i].setValue(value);
+                  place.values[i].setValue(value);
                   }
           }
+          places.add(place);
         }
         }
         catch(Exception e){
-          
+           e.printStackTrace();
         }
-        return places;
+        Place_dbo placesarray[] = new Place_dbo[places.size()];
+        for(int i=0; i<places.size();i++){
+            placesarray[i] = places.get(i);
+        }
+        return placesarray;
     }
     
     public static Place_dbo[] select(boolean[] selected, String whereclause, int min_id, int count) {
-        Place_dbo places[] = null;
+         ArrayList<Place_dbo> places = new ArrayList<Place_dbo>();
         String statement = "SELECT ";
         boolean firstentry = true;
         for(int i=0; i<Place_dbo.nooffields;i++)
@@ -78,24 +85,30 @@ public class PlacesTable {
         try{
         PreparedStatement ps = connection.prepareStatement(statement);
          rs = ps.executeQuery();
-         places = new Place_dbo[rs.getFetchSize()];
+        
          int index = 0;
          
          while(rs.next()){
+              Place_dbo place = new Place_dbo();
           for(int i=0;i<Place_dbo.nooffields;i++){
               if(selected[i]){
                   String value = rs.getString(i+1);
                   if(value!=null) {
-                  places[index].values[i].setValue(value);
+                  place.values[i].setValue(value);
                   }
               }
           }
+          places.add(place);
         }
         }
         catch(Exception e){
-           
+            e.printStackTrace();
         }
-        return places;
+        Place_dbo placesarray[] = new Place_dbo[places.size()];
+        for(int i=0; i<places.size();i++){
+            placesarray[i] = places.get(i);
+        }
+        return placesarray;
     }
     
     public static void insert(Place_dbo place) {
@@ -125,7 +138,7 @@ public class PlacesTable {
         ps.close();
         }
         catch(Exception e){
-           
+            e.printStackTrace();
         }
         
     }
@@ -157,7 +170,7 @@ public class PlacesTable {
         ps.close();
         }
         catch(Exception e){
-           
+            e.printStackTrace();
         }   
     }
     
@@ -187,7 +200,7 @@ public class PlacesTable {
             ps.close();
         }
         catch(Exception e){
-          
+           e.printStackTrace();
         }
     }
     

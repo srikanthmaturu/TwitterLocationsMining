@@ -33,36 +33,43 @@ public class TweetCollections_HashTags {
     Twitter twitter;
     SearchResource searchres;
     TweetHelper thelper;
+    HashTagHelper hashtaghelper;
     Users_EdgesCollectionFromTweets users_edgescollections;
+    UserHelper userhelper;
     
     public TweetCollections_HashTags() {
         twitter = TwitterResources.getTwitterSingleton();
         searchres = twitter.search();
         thelper = new TweetHelper();
         users_edgescollections = new Users_EdgesCollectionFromTweets();
+        hashtaghelper = new HashTagHelper();
+        userhelper = new UserHelper();
+        
     }
     
     
-    public void updateTweetsCollectedfromHashTags() {
-        
+    public void updateTweetsCollectedfromHashTags() throws InterruptedException{
+        //LogPrinter.printLog("Collecting tweets from unprocessed hashtags");
         Hashtag_dbo[] hashtags;
         long min_id = 0;
         int count = 500;
         boolean available = true;
         while(available){
         hashtags = HashTagTable.select( " processed = false ", min_id, count);
-        if(hashtags==null){
+        if(hashtags.length==0){
             available = false;
             continue;
         }
         for(int index=0; index<hashtags.length;index++){
+            
             collectTweetsFromHashtag_popterm(hashtags[index]);
         }
-                }
-        LogPrinter.printLog("All Hashtags are worked once.");
+        min_id = hashtags[hashtags.length-1].values[Hashtag_dbo.map.get("id")].lnumber;
+        }
+        
     }
     
-    public void collectTweetsFromHashtag_popterm(Hashtag_dbo hashtag) {
+    public void collectTweetsFromHashtag_popterm(Hashtag_dbo hashtag) throws InterruptedException{
         
         long max_id = 0;
         boolean midused = false, sidused = false;
@@ -76,6 +83,7 @@ public class TweetCollections_HashTags {
         sidused = true;
         }
         Query q =  new Query(hashtag.values[Hashtag_dbo.map.get("hashtag_popterm")].string);
+        //LogPrinter.printLog("Collection Tweets for hashtag_searchterm"+hashtag.values[Hashtag_dbo.map.get("hashtag_popterm")].string);
         q.setCount(100);
         if(midused){
             q.setMaxId(max_id);
@@ -88,22 +96,26 @@ public class TweetCollections_HashTags {
         try {
         result = searchres.search(q);}
         catch(Exception e){   
+            LogPrinter.printLog("Tweet Search Resources Rate Limit reached ");
+            if(e instanceof TwitterException) {
+            
+            }
+            if(e instanceof InterruptedException) {
+                //Thread.sleep(((TwitterException)e).getRetryAfter()*1000+5000);
+            }
         }
+        int count = 0 ;
         for(Status s: result.getTweets()) {
             Tweet_dbo tweet = thelper.convertStatusToTweet_dbo(s);
             String whereclause = "tweet_id = "+Long.toString(tweet.values[Tweet_dbo.map.get("tweet_id")].lnumber);
+            tweet.values[Tweet_dbo.map.get("processed")].setValue("true");
             if(TweetsTable.select(whereclause, 0, 2).length==0){
+                //LogPrinter.printLog(" Inserting tweet "+count+tweet.values[Tweet_dbo.map.get("tweet_id")].lnumber);
             TweetsTable.insert(tweet);
             users_edgescollections.extract_InsertUsers_EdgesFromTweet(s);
+            count++;
             }
         }
-        
-        
     }
-    
-    
-    
-    
-    
     
 }

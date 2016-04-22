@@ -17,8 +17,8 @@ public class Tweet_dbo {
     
     
        public final static String fieldnames[] = {"id","tweet_id","user_id","user_screenname","lon","lat","f_usertimeline"
-       ,"f_search","text","hashtags","mentions","timestamp","searchterm","favouritecount","retweetcount","processed"};
-     public final static int types[] = {5,5,5,2,1,1,3,3,2,2,2,4,2,5,5,3};
+       ,"f_search","text","hashtags","mentions","searchterm","favouritecount","retweetcount","processed"};
+     public final static int types[] = {5,5,5,2,1,1,3,3,2,2,2,2,5,5,3};
      public final static int nooffields = fieldnames.length;
      public Datatype values[] = new Datatype[fieldnames.length];
      public static final String tablename = "`tweethitter`.`tweets`";

@@ -9,6 +9,7 @@ package datamanagement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 /**
  *
@@ -19,7 +20,7 @@ public class TweetsTable {
     public static Connection connection;
     
     public static Tweet_dbo[] select(String whereclause, int min_id, int count) {
-        Tweet_dbo tweets[] = null;
+        ArrayList<Tweet_dbo> tweets = new ArrayList<Tweet_dbo>();
         String statement = "SELECT * ";
         statement = statement.concat(" from "+Tweet_dbo.tablename);
         if(whereclause!=null){
@@ -34,25 +35,31 @@ public class TweetsTable {
         try{
         PreparedStatement ps = connection.prepareStatement(statement);
          rs = ps.executeQuery();
-         tweets = new Tweet_dbo[rs.getFetchSize()];
+         
          int index = 0;
          while(rs.next()){
+             Tweet_dbo tweet = new Tweet_dbo();
           for(int i=0;i<Tweet_dbo.nooffields;i++){
               String value = rs.getString(i+1);
                   if(value!=null) {
-                  tweets[index].values[i].setValue(value);
+                  tweet.values[i].setValue(value);
                   }
           }
+          tweets.add(tweet);
         }
         }
         catch(Exception e){
-           
+            e.printStackTrace();
         }
-        return tweets;
+       Tweet_dbo[] tweetsarray = new Tweet_dbo[tweets.size()];
+        for(int i=0; i<tweets.size();i++){
+            tweetsarray[i] = tweets.get(i);
+        }
+        return tweetsarray;
     }
     
     public static Tweet_dbo[] select(boolean[] selected, String whereclause, int min_id, int count) {
-        Tweet_dbo tweets[] = null;
+        ArrayList<Tweet_dbo> tweets = new ArrayList<Tweet_dbo>();
         String statement = "SELECT ";
         boolean firstentry = true;
         for(int i=0; i<Tweet_dbo.nooffields;i++)
@@ -64,6 +71,7 @@ public class TweetsTable {
              statement = statement.concat(Tweet_dbo.fieldnames[i]);
          }
         }
+        
         statement = statement.concat(" from "+Tweet_dbo.tablename);
        
         if(whereclause!=null){
@@ -78,24 +86,30 @@ public class TweetsTable {
         try{
         PreparedStatement ps = connection.prepareStatement(statement);
          rs = ps.executeQuery();
-         tweets = new Tweet_dbo[rs.getFetchSize()];
+        
          int index = 0;
          
          while(rs.next()){
+             Tweet_dbo tweet = new Tweet_dbo();
           for(int i=0;i<Tweet_dbo.nooffields;i++){
               if(selected[i]){
                   String value = rs.getString(i+1);
                   if(value!=null) {
-                  tweets[index].values[i].setValue(value);
+                  tweet.values[i].setValue(value);
                   }
               }
           }
+          tweets.add(tweet);
         }
         }
         catch(Exception e){
-            
+             e.printStackTrace();
         }
-        return tweets;
+        Tweet_dbo[] tweetsarray = new Tweet_dbo[tweets.size()];
+        for(int i=0; i<tweets.size();i++){
+            tweetsarray[i] = tweets.get(i);
+        }
+        return tweetsarray;
     }
     
     public static void insert(Tweet_dbo t) {
@@ -124,8 +138,9 @@ public class TweetsTable {
         ps.executeUpdate();
         ps.close();
         }
+        
         catch(Exception e){
-            
+             e.printStackTrace();
         }
         
     }
@@ -157,7 +172,7 @@ public class TweetsTable {
         ps.close();
         }
         catch(Exception e){
-            
+             e.printStackTrace();
         }   
     }
     
@@ -187,7 +202,7 @@ public class TweetsTable {
             ps.close();
         }
         catch(Exception e){
-            
+             e.printStackTrace();
         }
     }
     

@@ -5,6 +5,8 @@
  */
 package DataCollections;
 
+import DataAccess.ConnectionFactory;
+import datamanagement.PlacesTable;
 import datamanagement.User_dbo;
 import datamanagement.UsersTable;
 import twitter4j.User;
@@ -20,6 +22,9 @@ public class UserHelper {
     public GeoNamesHelper geohelper;
     public UserHelper() {
         geohelper = new GeoNamesHelper();
+        if(UsersTable.connection==null){
+        UsersTable.connection = ConnectionFactory.defaultConnect();
+        }
     }
     public User_dbo[] selectUsers(boolean[] selected, String whereclause, int min_id, int count){
             return UsersTable.select(selected, whereclause, min_id, count);
@@ -29,17 +34,19 @@ public class UserHelper {
         
         User_dbo u = new User_dbo();
         u.values[User_dbo.map.get("user_id")].setValue(String.valueOf(user.getId()));
-        u.values[User_dbo.map.get("name")].setValue(user.getName());
-        u.values[User_dbo.map.get("screename")].setValue(user.getScreenName());
+        u.values[User_dbo.map.get("name")].setValue(removeEscapeCharacters(user.getName()));
+        u.values[User_dbo.map.get("screename")].setValue(removeEscapeCharacters(user.getScreenName()));
         u.values[User_dbo.map.get("lang")].setValue(user.getLang());
-        u.values[User_dbo.map.get("location")].setValue(user.getLocation());
+        u.values[User_dbo.map.get("location")].setValue(removeEscapeCharacters(user.getLocation()));
         u.values[User_dbo.map.get("geoenabled")].setValue(String.valueOf(user.isGeoEnabled()));
         u.values[User_dbo.map.get("timezone")].setValue(user.getTimeZone());
         u.values[User_dbo.map.get("profileurl")].setValue(user.getURL());
         u.values[User_dbo.map.get("protected")].setValue(String.valueOf(user.isProtected()));
         u.values[User_dbo.map.get("verified")].setValue(String.valueOf(user.isVerified()));
-        u.values[User_dbo.map.get("description")].setValue(user.getDescription());
-        u.values[User_dbo.map.get("createddate")].setValue(String.valueOf(user.getCreatedAt()));
+        
+        
+       
+        u.values[User_dbo.map.get("description")].setValue(removeEscapeCharacters(user.getDescription()));
         
         if(geoinfoavailable){
             double[] geocoor = geohelper.searchGeoLocCoor(user.getLocation());
@@ -57,10 +64,18 @@ public class UserHelper {
         
         User_dbo u = new User_dbo();
         u.values[User_dbo.map.get("user_id")].setValue(String.valueOf(user.getId()));
-        u.values[User_dbo.map.get("name")].setValue(user.getName());
-        u.values[User_dbo.map.get("screename")].setValue(user.getScreenName());
+        u.values[User_dbo.map.get("name")].setValue(removeEscapeCharacters(user.getName()));
+        u.values[User_dbo.map.get("screename")].setValue(removeEscapeCharacters(user.getScreenName()));
         return u;
     }
+     
+     public String removeEscapeCharacters(String input){
+         String escapedstring = input;
+         escapedstring = escapedstring.replaceAll("'", "");
+        escapedstring = escapedstring.replaceAll("\"", "");
+        escapedstring = escapedstring.replaceAll(",", "");
+        return escapedstring;
+     }
     
     
     

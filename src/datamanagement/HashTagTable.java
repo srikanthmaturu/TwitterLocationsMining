@@ -6,9 +6,11 @@
 package datamanagement;
 
 
+import Logger.LogPrinter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 /**
  *
@@ -21,7 +23,9 @@ public class HashTagTable {
     
     
     public static Hashtag_dbo[] select(String whereclause, long min_id, int count) {
-        Hashtag_dbo htags[] = null;
+         
+       
+        ArrayList<Hashtag_dbo> htags = new ArrayList<Hashtag_dbo>();
         String statement = "SELECT * ";
         statement =statement.concat(" from "+Hashtag_dbo.tablename);
         if(whereclause!=null){
@@ -34,27 +38,38 @@ public class HashTagTable {
         statement =statement.concat(" LIMIT "+count);
         ResultSet rs;
         try{
+        LogPrinter.printLog(" Select Statement Prepared "+statement);
+           
         PreparedStatement ps = connection.prepareStatement(statement);
+        
          rs = ps.executeQuery();
-         htags = new Hashtag_dbo[rs.getFetchSize()];
+        
          int index = 0;
          while(rs.next()){
+            Hashtag_dbo hashtag = new Hashtag_dbo();
           for(int i=0;i<Hashtag_dbo.nooffields;i++){
-                  String value = rs.getString(i+1);
+                 String value = rs.getString(i+1);  
                   if(value!=null) {
-                  htags[index].values[i].setValue(value);
-                  }
+                  hashtag.values[i].setValue(value);
+             }
+            }
+            htags.add(hashtag);
           }
-        }
+         
         }
         catch(Exception e){
-            
+            e.printStackTrace();
+             
         }
-        return htags;
+        Hashtag_dbo[] hashtags = new Hashtag_dbo[htags.size()];
+        for(int i=0; i<htags.size();i++){
+            hashtags[i] = htags.get(i);
+        }
+        return hashtags ;
     }
     
     public static Hashtag_dbo[] select(boolean[] selected, String whereclause, long min_id, int count) {
-        Hashtag_dbo htags[] = null;
+        ArrayList<Hashtag_dbo> htags = new ArrayList<Hashtag_dbo>();
         String statement = "SELECT ";
         boolean firstentry = true;
         for(int i=0; i<Hashtag_dbo.nooffields;i++)
@@ -80,23 +95,30 @@ public class HashTagTable {
         try{
         PreparedStatement ps = connection.prepareStatement(statement);
          rs = ps.executeQuery();
-         htags = new Hashtag_dbo[rs.getFetchSize()];
+         
          int index = 0;
          
          while(rs.next()){
+             Hashtag_dbo htag = new Hashtag_dbo();
           for(int i=0;i<Hashtag_dbo.nooffields;i++){
               if(selected[i]){
                   String value = rs.getString(i+1);
                   if(value!=null)
-                  htags[index].values[i].setValue(value);
+                  htag.values[i].setValue(value);
               }
           }
+          htags.add(htag);
         }
         }
         catch(Exception e){
-            
+             e.printStackTrace();
         }
-        return htags;
+        Hashtag_dbo[] hashtags = new Hashtag_dbo[htags.size()];
+        for(int i=0; i<htags.size();i++){
+            hashtags[i] = htags.get(i);
+        }
+        
+        return hashtags;
     }
     
     public static void insert(Hashtag_dbo htag) {
@@ -127,7 +149,7 @@ public class HashTagTable {
         ps.close();
         }
         catch(Exception e){
-            
+             e.printStackTrace();
         } 
     }
     
@@ -158,7 +180,7 @@ public class HashTagTable {
         ps.close();
         }
         catch(Exception e){
-            
+             e.printStackTrace();
         }   
     }
     

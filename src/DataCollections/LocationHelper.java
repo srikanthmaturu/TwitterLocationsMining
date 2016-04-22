@@ -22,8 +22,9 @@ public class LocationHelper {
     
     
     public LocationHelper() {
-        
+        if(LocationsTable.connection==null){
         LocationsTable.connection = ConnectionFactory.defaultConnect();
+        }
         
     }
     

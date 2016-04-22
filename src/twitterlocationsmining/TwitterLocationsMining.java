@@ -11,6 +11,7 @@ import datamanagement.User_dbo;
 import datamanagement.UsersTable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.ListIterator;
 
 /**
  *
@@ -22,9 +23,21 @@ public class TwitterLocationsMining {
      * @param args the command line arguments
      */
     
+    public class Node {
+        double[] geocoor;
+        long user_id;
+        double weight;
+        public Node(){
+        geocoor = new double[2];
+    }
+    }
+    
+    
     public UserRelationsHelper userrelationhelper;
     public UserHelper userhelper;
     public UserRelationsHelper relationhelper;
+    
+   
     
     public TwitterLocationsMining() {
         userrelationhelper = new UserRelationsHelper();
@@ -33,18 +46,79 @@ public class TwitterLocationsMining {
     }
     public static void main(String[] args) {
         TwitterLocationsMining locationminer = new TwitterLocationsMining();  
-        locationminer.estimator();
+        locationminer.estimator(10);
         locationminer.printResults();
     }
+    
     public void printResults(){
         long noofuserswithgeoinfo;
         long noofuserswithestimatedlocation;
         
     }
-    public void estimator() {
+    
+    public void estimator(int noofiteratons) {
         
         int iterationno;
+        for(int iteration = 0; iteration<noofiteratons; iteration++){
+            boolean available = true;
+            int count = 100;
+            long min_id = 0;
+            while(available) {
+                User_dbo[] users = UsersTable.select(" ", min_id, count);
+                if(users.length==0){
+                available = false;
+                continue;
+                }
+                min_id = users[users.length-1].values[User_dbo.map.get("user_id")].lnumber;
+                for(User_dbo user : users) {
+                    long user_id = user.values[User_dbo.map.get("user_id")].lnumber;
+                if(isProfileLocationAvailable(user.values[User_dbo.map.get("user_id")].lnumber)){
+                    
+                    double[] geocoor = new double[2];
+                    geocoor[0] = user.values[User_dbo.map.get("probased_lat")].decimal;
+                    geocoor[1] = user.values[User_dbo.map.get("probased_lon")].decimal;
+                    
+                    setEstimatedLocationOfUser(user_id,geocoor);
+                  }
+                else{
+                    HashMap<Long,Long> edges = getConnectedUsers(getEdgesForUserId(user_id),user_id);
+                    ArrayList<Node> nodes = new ArrayList<Node>();
+                    for(Long id: edges.keySet()){
+                        Node n = new Node();
+                        n.user_id = id;
+                        n.weight = edges.get(id);
+                        double[] prevflocation = getPrevf(id);
+                        if(prevflocation.length==2) {
+                            n.geocoor = prevflocation;
+                            nodes.add(n);
+                        }
+                    }
+                    if(!nodes.isEmpty()){
+                        setEstimatedLocationOfUser(user_id,locationEstimate(nodes));
+                    }
+                    
+                }
+                }
+            
+            }
+        }
+    }
+    
+    public double[] locationEstimate(ArrayList<Node> nodes){
         
+        double[] estimate = new double[2];
+        ListIterator li = nodes.listIterator();
+        double numeratorx =0,denominatorx = 0,numeratory =0,denominatory = 0;
+        while(li.hasNext()){
+            Node n = (Node)li.next();
+            numeratorx = numeratorx + n.weight*n.geocoor[0];
+            numeratory = numeratory + n.weight*n.geocoor[1];
+            denominatorx = denominatorx + n.weight;
+            denominatory = denominatory + n.weight;
+        }
+        estimate[0] = numeratorx/denominatorx;
+        estimate[1] = numeratory/denominatory;
+        return estimate;
     }
     
     public void removeEstimatedLocations() {
@@ -72,12 +146,12 @@ public class TwitterLocationsMining {
     
     
     
-    
-    
     public double computeDispersionOfUser(long user_id){
            HashMap<Long,Long> edges = getConnectedUsers(getEdgesForUserId(user_id),user_id);
            double dispersion=0;
+      
            double[] locationofcurrentuser = getPrevf(user_id);
+          
            if(locationofcurrentuser!=null){
            for(Long connecteduser: edges.keySet()){
                Long weight = edges.get(connecteduser);
@@ -87,6 +161,10 @@ public class TwitterLocationsMining {
                }
            }
            }
+           else{
+               dispersion = -1;
+           }
+           
            return dispersion;
     }
     

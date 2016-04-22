@@ -7,6 +7,7 @@ package datamanagement;
 
 
 import static datamanagement.Hashtag_dbo.fieldnames;
+import static datamanagement.User_dbo.map;
 import java.util.HashMap;
 
 /**
@@ -14,7 +15,7 @@ import java.util.HashMap;
  * @author Srikanth
  */
 public class UserRelation_dbo {
-     public final static String fieldnames[] = {"id","fu_id","su_id","fu_tweets","lu_tweets"};
+     public final static String fieldnames[] = {"id","fu_id","su_id","fu_tweets","su_tweets"};
      public final static int types[] = {5,5,5,5,5};
      public final static int nooffields = fieldnames.length;
      public Datatype values[] = new Datatype[fieldnames.length];
@@ -28,6 +29,7 @@ public class UserRelation_dbo {
              values[i].type = types[i];
          }
          if(map==null){
+             map = new HashMap<>();
              for(int i =0; i<nooffields; i++){
                  map.put(fieldnames[i], i);
              }

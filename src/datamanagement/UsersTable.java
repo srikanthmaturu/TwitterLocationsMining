@@ -5,9 +5,11 @@
  */
 package datamanagement;
 
+import Logger.LogPrinter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 /**
  *
@@ -41,13 +43,16 @@ public class UsersTable {
               values = values.concat(");");
         }
         }
+        
         try {
-        PreparedStatement ps = connection.prepareStatement(statement+values);
+         PreparedStatement ps = connection.prepareStatement(statement+values);
+        //LogPrinter.printLog(ps.toString());
         ps.executeUpdate();
         ps.close();
         }
         catch(Exception e){
-           
+            e.printStackTrace();
+            LogPrinter.printLog(statement+values);
         }
         
     }
@@ -79,7 +84,7 @@ public class UsersTable {
         ps.close();
         }
         catch(Exception e){
-           
+            e.printStackTrace();
         }   
     }
     
@@ -88,7 +93,7 @@ public class UsersTable {
     
     
     public static User_dbo[] select(String whereclause, long min_id, int count) {
-        User_dbo users[] = null;
+        ArrayList<User_dbo> users = new ArrayList<User_dbo>();
         String statement = "SELECT * ";
        statement =  statement.concat(" from "+User_dbo.tablename);
         if(whereclause!=null){
@@ -103,26 +108,35 @@ public class UsersTable {
         try{
         PreparedStatement ps = connection.prepareStatement(statement);
          rs = ps.executeQuery();
-         users = new User_dbo[rs.getFetchSize()];
+        
          int index = 0;
          while(rs.next()){
+             User_dbo user = new User_dbo();
           for(int i=0;i<User_dbo.nooffields;i++){
               String value = rs.getString(i+1);
                   if(value!=null) {
-                  users[index].values[i].setValue(value);
+                  user.values[i].setValue(value);
+                  
                   }
+            }
+         
+          users.add(user);
           }
         }
-        }
         catch(Exception e){
-           
+            e.printStackTrace();
         }
-        return users;
+       User_dbo usersarray[] = new User_dbo[users.size()];
+       for(int i=0; i<users.size();i++){
+           usersarray[i] = users.get(i);
+       }
+       
+       return usersarray;
         
     }
     
     public static User_dbo[] select(boolean[] selected, String whereclause, long min_id, int count) {
-        User_dbo users[] = null;
+        ArrayList<User_dbo> users = new ArrayList<User_dbo>();
         String statement = "SELECT ";
         boolean firstentry = true;
         for(int i=0; i<User_dbo.nooffields;i++)
@@ -148,36 +162,43 @@ public class UsersTable {
         try{
         PreparedStatement ps = connection.prepareStatement(statement);
          rs = ps.executeQuery();
-         users = new User_dbo[rs.getFetchSize()];
+        
          int index = 0;
          
          while(rs.next()){
+             User_dbo user = new User_dbo();
           for(int i=0;i<User_dbo.nooffields;i++){
               if(selected[i]){
                   String value = rs.getString(i+1);
                   if(value!=null) {
-                  users[index].values[i].setValue(value);
+                  user.values[i].setValue(value);
                   }
               }
           }
+          users.add(user);
         }
         }
         catch(Exception e){
             e.printStackTrace();
         }
-        return users;
+        User_dbo usersarray[] = new User_dbo[users.size()];
+       for(int i=0; i<users.size();i++){
+           usersarray[i] = users.get(i);
+       }
+       return usersarray;
     }
     
     public static void delete(long user_id){
-        String statement = "DELETE FROM TABLE "+User_dbo.tablename+" where user_id = "+user_id;
+        String statement = "DELETE FROM "+User_dbo.tablename+" where user_id = "+user_id+";";
         
         try {
+            
             PreparedStatement ps = connection.prepareStatement(statement);
             ps.executeUpdate();
             ps.close();
         }
         catch(Exception e){
-         
+          e.printStackTrace();
         }
         
     }
@@ -239,7 +260,7 @@ public class UsersTable {
             ps.close();
         }
         catch(Exception e){
-           
+            e.printStackTrace();
         }
     }
     

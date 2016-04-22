@@ -8,6 +8,7 @@ package datamanagement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 /**
  *
@@ -24,7 +25,7 @@ public class LocationsTable {
     
     
     public static Location_dbo[] select(String whereclause, int min_id, int count) {
-        Location_dbo locs[] = null;
+        ArrayList<Location_dbo> locs = new ArrayList<Location_dbo>();
         String statement = "SELECT * ";
         statement = statement.concat(" from "+Location_dbo.tablename);
         if(whereclause!=null){
@@ -39,27 +40,33 @@ public class LocationsTable {
         try{
         PreparedStatement ps = connection.prepareStatement(statement);
          rs = ps.executeQuery();
-         locs = new Location_dbo[rs.getFetchSize()];
+         
          int index = 0;
          while(rs.next()){
+              Location_dbo loc = new Location_dbo();
           for(int i=0;i<Location_dbo.nooffields;i++){
                   String value = rs.getString(i+1);
                   if(value!=null) {
-                  locs[index].values[i].setValue(value);
+                  loc.values[i].setValue(value);
                   }
           }
+          locs.add(loc);
         }
         }
         catch(Exception e){
             
         }
-        return locs;
+       Location_dbo locations[] = new Location_dbo[locs.size()];
+        for(int i=0; i<locs.size();i++){
+            locations[i] = locs.get(i);
+        }
+        return locations;
     }
     
     
     
     public static Location_dbo[] select(boolean[] selected, String whereclause, int min_id, int count) {
-        Location_dbo locs[] = null;
+        ArrayList<Location_dbo> locs = new ArrayList<Location_dbo>();
         String statement = "SELECT ";
         boolean firstentry = true;
         for(int i=0; i<Location_dbo.nooffields;i++)
@@ -85,24 +92,30 @@ public class LocationsTable {
         try{
         PreparedStatement ps = connection.prepareStatement(statement);
          rs = ps.executeQuery();
-         locs = new Location_dbo[rs.getFetchSize()];
+         
          int index = 0;
          
          while(rs.next()){
+             Location_dbo loc = new Location_dbo();
           for(int i=0;i<Location_dbo.nooffields;i++){
               if(selected[i]){
                   String value = rs.getString(i+1);
                   if(value!=null) {
-                  locs[index].values[i].setValue(value);
+                  loc.values[i].setValue(value);
                   }
               }
           }
+          locs.add(loc);
         }
         }
         catch(Exception e){
-            
+           e.printStackTrace();  
         }
-        return locs;
+        Location_dbo locations[] = new Location_dbo[locs.size()];
+        for(int i=0; i<locs.size();i++){
+            locations[i] = locs.get(i);
+        }
+        return locations;
     }
     
     
@@ -133,7 +146,7 @@ public class LocationsTable {
         ps.close();
         }
         catch(Exception e){
-           
+           e.printStackTrace(); 
         }
     }
     
@@ -164,7 +177,7 @@ public class LocationsTable {
         ps.close();
         }
         catch(Exception e){
-           
+            e.printStackTrace();
         }   
     }
     
@@ -194,7 +207,7 @@ public class LocationsTable {
             ps.close();
         }
         catch(Exception e){
-           
+            e.printStackTrace();
         }
     }
     

@@ -5,8 +5,11 @@
  */
 package DataCollections;
 
+import DataAccess.ConnectionFactory;
+import datamanagement.LocationsTable;
 import datamanagement.Place_dbo;
 import datamanagement.PlacesTable;
+import datamanagement.TweetsTable;
 import twitter4j.GeoLocation;
 import twitter4j.Place;
 import org.json.simple.*;
@@ -18,7 +21,9 @@ import org.json.simple.*;
 public class PlaceHelper {
     
     public PlaceHelper() {
-        
+        if(PlacesTable.connection==null){
+        PlacesTable.connection = ConnectionFactory.defaultConnect();
+        }
     }
     
      public Place_dbo[] selectPlaces(boolean[] selected, String whereclause, int min_id, int count) {

@@ -24,7 +24,9 @@ public class HashTagHelper {
         
     
     public HashTagHelper() {
+        if(HashTagTable.connection == null){
         HashTagTable.connection = ConnectionFactory.defaultConnect();
+        }
     }
     
     public void closeDBConnection() throws SQLException{
@@ -39,7 +41,7 @@ public class HashTagHelper {
         for (Trend t : trends) {
             LogPrinter.printLog("Processing a trend"+t.getName());
             
-            if (HashTagTable.select("hashtag = \"" + t.getName()+"\"", 0, 1).length == 0) {
+            if (HashTagTable.select("hashtag_popterm = \"" + t.getName()+"\"", 0, 1).length == 0) {
                 hashtag = convertTrendToHashTag_dbo(t);
                 for(int j=0; j<Hashtag_dbo.nooffields;j++){
                  selection[j] = hashtag.values[j].used;
@@ -54,7 +56,8 @@ public class HashTagHelper {
     
     public Hashtag_dbo convertTrendToHashTag_dbo(Trend trend) {
         Hashtag_dbo hashtag = new Hashtag_dbo();
-        hashtag.values[Hashtag_dbo.map.get("hashtag")].setValue(trend.getName());
+        Logger.LogPrinter.printLog("Converting Trend "+trend.getName()+" to HashTag_dbo");
+        hashtag.values[Hashtag_dbo.map.get("hashtag_popterm")].setValue(trend.getName());
         hashtag.values[Hashtag_dbo.map.get("ftrendsres")].setValue("true");
         return hashtag;
     }
