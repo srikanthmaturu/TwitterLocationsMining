@@ -57,7 +57,7 @@ public class UserRelationsHelper {
                UsersRelationsTable.update(relation,selected,"id = "+relation.values[UserRelation_dbo.map.get("id")].lnumber);
         }
         
-        System.out.println(ntweets);
+        //System.out.println(ntweets);
     }
     
     public UserRelation_dbo checkEdgePair(long user1, long user2){

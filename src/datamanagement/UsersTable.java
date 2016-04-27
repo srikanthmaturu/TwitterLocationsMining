@@ -264,4 +264,8 @@ public class UsersTable {
         }
     }
     
+    public void printTable(){
+        
+    }
+    
 }

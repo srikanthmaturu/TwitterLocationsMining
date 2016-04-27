@@ -18,9 +18,11 @@ public class TwitterDataCollection {
 
     
 public static void main(String[] args) throws InterruptedException{
-   
-          FriendsnFollowersCollection friendscoll = new FriendsnFollowersCollection();
-        friendscoll.updateDatabasewithFriends_followers();
+        
+            UserTimeLineCollection timelinecoll = new UserTimeLineCollection();
+        timelinecoll.startProcessForTimeLineCollectionOfUsers();
+    
+          
         
 }
 
