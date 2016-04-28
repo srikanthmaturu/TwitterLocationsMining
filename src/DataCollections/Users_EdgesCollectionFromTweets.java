@@ -5,6 +5,7 @@
  */
 package DataCollections;
 
+import Logger.LogPrinter;
 import datamanagement.Tweet_dbo;
 import datamanagement.UserRelation_dbo;
 import datamanagement.User_dbo;
@@ -49,6 +50,8 @@ public class Users_EdgesCollectionFromTweets {
             if(existinguser.length==1){
                 if(existinguser[0].values[User_dbo.map.get("udetails_processed")].bool == false){
                 UsersTable.delete(existinguser[0].values[User_dbo.map.get("user_id")].lnumber);
+                tweetuser.values[User_dbo.map.get("fri_fol_processed")].setValue(String.valueOf(existinguser[0].values[User_dbo.map.get("fri_fol_processed")].bool));
+                LogPrinter.printLog("User Deleted");
                 UsersTable.insert(tweetuser);
                 }
         }

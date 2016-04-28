@@ -74,7 +74,7 @@ public class UserTimeLineCollection {
             Thread.sleep(900*1000+500);
         }
         totaltweets += statuses.size();
-        if(statuses.size()==0||totaltweets>250){
+        if(statuses.isEmpty()||totaltweets>250){
             LogPrinter.printLog("All tweets are retrieved....");
                 available = false;
                 continue;
@@ -83,7 +83,7 @@ public class UserTimeLineCollection {
         ListIterator li = statuses.listIterator();
         while(li.hasNext()){
             Status s = (Status)li.next();
-            if(since_id < 0){
+            if(since_id < 0 && nooftweets==0){
                 since_id = s.getId();
             }
             Tweet_dbo tweet = tweethelper.convertStatusToTweet_dbo(s);
@@ -93,19 +93,25 @@ public class UserTimeLineCollection {
                 useredgecollections.extract_InsertUsers_EdgesFromTweet(s);
                 nooftweets++;
                 LogPrinter.printLog("Inserting a new tweet.."+nooftweets);
+            } else {
+                 LogPrinter.printLog("This tweet already exists in the database...");
             }
         }
-        if(statuses.size()>0){
+        if(!statuses.isEmpty()){
         max_id = ((Status)statuses.get(statuses.size()-1)).getId();
         p.setMaxId(max_id);
         }
         }
+        LogPrinter.printLog(String.valueOf(max_id));
+        LogPrinter.printLog(String.valueOf(since_id));
         if(since_id>0 && max_id >0){
             boolean selected[] = new boolean[User_dbo.nooffields];
             selected[User_dbo.map.get("max_id")] = true;
             selected[User_dbo.map.get("since_id")] = true;
+            selected[User_dbo.map.get("utimeline_processed")] = true;
             user.values[User_dbo.map.get("max_id")].setValue(String.valueOf(max_id)); 
             user.values[User_dbo.map.get("since_id")].setValue(String.valueOf(since_id));
+            user.values[User_dbo.map.get("utimeline_processed")].setValue("true");
             UsersTable.update(user, selected, " user_id =  "+user.values[User_dbo.map.get("user_id")].lnumber);
         }
         
@@ -118,6 +124,7 @@ public class UserTimeLineCollection {
                 UsersTable.delete(currentuser[0].values[User_dbo.map.get("user_id")].lnumber);
                 user.values[User_dbo.map.get("udetails_processed")].setValue("true");
                 
+                
                 UsersTable.insert(user);
             }
         }
@@ -129,7 +136,7 @@ public class UserTimeLineCollection {
         long min_id = 0;
         boolean available = true;
         while(available) {
-        users = UsersTable.select("fri_fol_processed = false ", min_id, count);
+        users = UsersTable.select(" utimeline_processed = false ", min_id, count);
         if(users.length == 0) {
             available = false;
             continue;
@@ -141,7 +148,10 @@ public class UserTimeLineCollection {
  
         }
         
+        
         }
+        
+         LogPrinter.printLog("Successfull All users selected were processed.");
         
         
     }

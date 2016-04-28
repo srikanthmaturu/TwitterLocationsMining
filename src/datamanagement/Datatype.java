@@ -5,6 +5,7 @@
  */
 package datamanagement;
 
+import Logger.LogPrinter;
 import java.sql.Date;
 
 /**
@@ -64,6 +65,17 @@ public class Datatype {
                 break;
             case 3: 
                 bool = Boolean.parseBoolean(value);
+                //LogPrinter.printLog("received value "+value);
+               // LogPrinter.printLog("stored value "+bool);
+                if("0".equals(value)||"1".equals(value)){
+                   // LogPrinter.printLog("Stored Appropriately");
+                 if("0".equals(value)){
+                     bool = false;
+                 }
+                 else {
+                     bool = true;
+                 }
+                }
                 break;
             case 4:
                 date = Date.valueOf(value);

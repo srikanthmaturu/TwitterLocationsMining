@@ -108,13 +108,14 @@ public class UsersTable {
         try{
         PreparedStatement ps = connection.prepareStatement(statement);
          rs = ps.executeQuery();
-        
+      
          int index = 0;
          while(rs.next()){
              User_dbo user = new User_dbo();
           for(int i=0;i<User_dbo.nooffields;i++){
               String value = rs.getString(i+1);
                   if(value!=null) {
+                    
                   user.values[i].setValue(value);
                   
                   }
@@ -171,6 +172,7 @@ public class UsersTable {
               if(selected[i]){
                   String value = rs.getString(i+1);
                   if(value!=null) {
+                      
                   user.values[i].setValue(value);
                   }
               }
