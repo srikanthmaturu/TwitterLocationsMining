@@ -43,7 +43,7 @@ public class UserTimeLineCollection {
         p.setCount(count);
         long max_id,since_id;
         int totaltweets =0;
-        
+        long timestamp = -1;
         int nooftweets = 0;
         if(user.values[User_dbo.map.get("max_id")].used) {
             max_id = user.values[User_dbo.map.get("max_id")].lnumber;
@@ -70,8 +70,16 @@ public class UserTimeLineCollection {
         }
         catch(Exception e){
             e.printStackTrace();
-            LogPrinter.printLog("Rate Limited Reached.. Sleeping.. for ms "+900*1000);
+            TwitterException te = (TwitterException)e;
+            if(te.exceededRateLimitation()) {
+                LogPrinter.printLog("Rate Limited Reached.. Sleeping.. for ms "+900*1000);
             Thread.sleep(900*1000+500);
+            } else{
+               
+               return;
+            }
+            
+            
         }
         totaltweets += statuses.size();
         if(statuses.isEmpty()||totaltweets>250){
