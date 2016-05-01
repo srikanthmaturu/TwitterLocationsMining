@@ -19,7 +19,7 @@ public class TweetsTable {
     
     public static Connection connection;
     
-    public static Tweet_dbo[] select(String whereclause, int min_id, int count) {
+    public static Tweet_dbo[] select(String whereclause, long min_id, int count) {
         ArrayList<Tweet_dbo> tweets = new ArrayList<Tweet_dbo>();
         String statement = "SELECT * ";
         statement = statement.concat(" from "+Tweet_dbo.tablename);
@@ -58,7 +58,7 @@ public class TweetsTable {
         return tweetsarray;
     }
     
-    public static Tweet_dbo[] select(boolean[] selected, String whereclause, int min_id, int count) {
+    public static Tweet_dbo[] select(boolean[] selected, String whereclause, long min_id, int count) {
         ArrayList<Tweet_dbo> tweets = new ArrayList<Tweet_dbo>();
         String statement = "SELECT ";
         boolean firstentry = true;

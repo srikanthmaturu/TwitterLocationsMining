@@ -6,6 +6,8 @@
 package DataCollections;
 
 import Logger.LogPrinter;
+import datamanagement.Tweet_dbo;
+import datamanagement.TweetsTable;
 import datamanagement.User_dbo;
 import datamanagement.UsersTable;
 
@@ -17,20 +19,47 @@ public class ComputeGroundTruthUsersLocations {
  
     int noofprofilelocsassigned=0;
     int noofuserswithnogroundtrulocs=0;
-    public double[] computeGroundTruthUserLocationsUsingProfileDescription(){
+    public double[] computeGroundTruthUserLocationsUsingProfileDescription(User_dbo user){
         double[] geocoor = null;
+        
+        
+        
+        
         
         return geocoor;
     }
     
-    public double[] computeGroundTruthLocationsUsingPlaceField(){
+    public double[] computeGroundTruthLocationsUsingPlaceField(User_dbo user){
         double[] geocoor = null;
+        
+        
+        
+        
         
         return geocoor;
     }
     
-    public double[] computeGroundTruthLocationsFromTweets() {
+    public double[] computeGroundTruthLocationsFromTweets(User_dbo user) {
         double[] geocoor = null;
+        
+        boolean available = true;
+        int count = 100;
+        long min_id = 0;
+        Tweet_dbo tweets[];
+        while(available) {
+            tweets = TweetsTable.select(" user_id = "+user.values[User_dbo.map.get("user_id")].lnumber, min_id, count);
+            if(tweets.length==0){
+                available = false;
+                continue;
+            }
+            for(Tweet_dbo t: tweets){
+             if(t.values[Tweet_dbo.map.get("lon")].used&&t.values[Tweet_dbo.map.get("lat")].used){
+                  
+             }   
+            }
+        }
+        
+        
         
         return geocoor;
     }
@@ -40,21 +69,32 @@ public class ComputeGroundTruthUsersLocations {
         user.values[User_dbo.map.get("descbased_geoinfo")].setValue(String.valueOf(descloc));
         user.values[User_dbo.map.get("probased_lon")].setValue(String.valueOf(profileloc[0]));
         user.values[User_dbo.map.get("probased_lat")].setValue(String.valueOf(profileloc[1]));
-        
+        boolean selected[] = new boolean[User_dbo.nooffields];
+        selected[User_dbo.map.get("probased_geoinfo")] = true;
+        selected[User_dbo.map.get("descbased_geoinfo")] = true;
+        selected[User_dbo.map.get("probased_lon")] = true;
+        selected[User_dbo.map.get("probased_lat")] = true;
+        UsersTable.update(user, selected, " user_id = "+user.values[User_dbo.map.get("user_id")].lnumber);
     }
     
     public void setTweetBasedLocation(double[] tweetloc,User_dbo user) {
+        
         user.values[User_dbo.map.get("tweetbased_geoinfo")].setValue("true");
         user.values[User_dbo.map.get("tweetbased_lon")].setValue(String.valueOf(tweetloc[0]));
         user.values[User_dbo.map.get("tweetbased_lat")].setValue(String.valueOf(tweetloc[1]));
         
+        boolean selected[] = new boolean[User_dbo.nooffields];
+        selected[User_dbo.map.get("tweetbased_geoinfo")] = true;
+        selected[User_dbo.map.get("tweetbased_lon")] = true;
+        selected[User_dbo.map.get("tweetbased_lat")] = true;
+        UsersTable.update(user, selected, " user_id = "+user.values[User_dbo.map.get("user_id")].lnumber);
     }
     
     public void updateGroundTruthLocationsOfUser(User_dbo user){
         
-        double[] tweetloc = computeGroundTruthLocationsFromTweets();
-        double[] profiledescloc = computeGroundTruthUserLocationsUsingProfileDescription();
-        double[] profilelocfield = computeGroundTruthLocationsUsingPlaceField();
+        double[] tweetloc = computeGroundTruthLocationsFromTweets(user);
+        double[] profiledescloc = computeGroundTruthUserLocationsUsingProfileDescription(user);
+        double[] profilelocfield = computeGroundTruthLocationsUsingPlaceField(user);
         if(tweetloc==null){
             if(profilelocfield==null){
                 if(profiledescloc!=null){

@@ -43,7 +43,7 @@ public class TweetHelper {
         tweet.values[Tweet_dbo.map.get("lon")].setValue(String.valueOf(s.getGeoLocation().getLongitude()));
         tweet.values[Tweet_dbo.map.get("lat")].setValue(String.valueOf(s.getGeoLocation().getLatitude()));
         }
-        tweet.values[Tweet_dbo.map.get("f_search")].setValue("true");
+        //tweet.values[Tweet_dbo.map.get("f_search")].setValue("true");
         tweet.values[Tweet_dbo.map.get("text")].setValue(removeEscapeCharacters(s.getText()));
         tweet.values[Tweet_dbo.map.get("hashtags")].setValue(stringifyHashtags(s.getHashtagEntities()));
         tweet.values[Tweet_dbo.map.get("mentions")].setValue(stringiyMentions(s.getUserMentionEntities()));

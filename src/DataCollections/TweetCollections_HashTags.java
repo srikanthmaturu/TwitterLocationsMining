@@ -109,6 +109,8 @@ public class TweetCollections_HashTags {
             Tweet_dbo tweet = thelper.convertStatusToTweet_dbo(s);
             String whereclause = "tweet_id = "+Long.toString(tweet.values[Tweet_dbo.map.get("tweet_id")].lnumber);
             tweet.values[Tweet_dbo.map.get("processed")].setValue("true");
+            tweet.values[Tweet_dbo.map.get("f_search")].setValue("true");
+            tweet.values[Tweet_dbo.map.get("searchterm")].setValue(hashtag.values[Hashtag_dbo.map.get("hashtag_popterm")].string);
             if(TweetsTable.select(whereclause, 0, 2).length==0){
                 //LogPrinter.printLog(" Inserting tweet "+count+tweet.values[Tweet_dbo.map.get("tweet_id")].lnumber);
             TweetsTable.insert(tweet);

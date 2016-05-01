@@ -82,7 +82,7 @@ public class UserTimeLineCollection {
             
         }
         totaltweets += statuses.size();
-        if(statuses.isEmpty()||totaltweets>250){
+        if(statuses.isEmpty()){
             LogPrinter.printLog("All tweets are retrieved....");
                 available = false;
                 continue;
@@ -97,6 +97,8 @@ public class UserTimeLineCollection {
             Tweet_dbo tweet = tweethelper.convertStatusToTweet_dbo(s);
             Tweet_dbo[] currentweets = TweetsTable.select(" tweet_id = "+tweet.values[Tweet_dbo.map.get("tweet_id")].lnumber, 0, 2);
             if(currentweets.length==0){
+                tweet.values[Tweet_dbo.map.get("processed")].setValue("true");
+                tweet.values[Tweet_dbo.map.get("f_usertimeline")].setValue("true");
                 TweetsTable.insert(tweet);
                 useredgecollections.extract_InsertUsers_EdgesFromTweet(s);
                 nooftweets++;
@@ -109,6 +111,13 @@ public class UserTimeLineCollection {
         max_id = ((Status)statuses.get(statuses.size()-1)).getId();
         p.setMaxId(max_id);
         }
+        if(totaltweets>250){
+            LogPrinter.printLog("No of tweets collected reached goal....");
+                available = false;
+                continue;
+                       
+            }
+        
         }
         LogPrinter.printLog(String.valueOf(max_id));
         LogPrinter.printLog(String.valueOf(since_id));
