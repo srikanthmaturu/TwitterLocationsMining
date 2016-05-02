@@ -14,17 +14,18 @@ import java.util.ArrayList;
 public class Node {
     
     public String label;
-    public double xcoor;
-    public double ycoor;
+    public int xcoor;
+    public int ycoor;
     public boolean locationavailable = false;
     public boolean hideloc = false;
     public boolean locationestimate = false;
     public double xecoor;
     public double yecoor;
+    public double deviation=0;
     
     public ArrayList<Edge> neighbours;
     
-    public Node(String label,double[] geocoor){
+    public Node(String label,int[] geocoor){
         this.label = label;
         neighbours = new ArrayList<Edge>();
         this.xcoor = geocoor[0];
@@ -33,6 +34,7 @@ public class Node {
     }
     
     public Node(String label) {
+        neighbours = new ArrayList<Edge>();
         this.label = label;
         
     }
@@ -68,8 +70,26 @@ public boolean equals(Object o){
     
 
 public int hashCode() {
-    return this.label.hashCode();
+    String location = String.valueOf(xcoor)+" "+String.valueOf(ycoor);
+    return location.hashCode();
     
+}
+
+public boolean computeDeviation(){
+    if(locationestimate&&hideloc){
+    deviation = distance(xcoor,xecoor,ycoor,yecoor);
+    return true;
+    }
+    return false;
+    
+}
+
+public double distance(double x1, double x2, double y1, double y2) {
+        return Math.sqrt((Math.pow((x1-x2), 2)+ Math.pow((y1-y2), 2)));
+    }
+
+public String toString() {
+    return label;
 }
 
 

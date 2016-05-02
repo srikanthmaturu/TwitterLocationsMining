@@ -5,11 +5,13 @@
  */
 package SyntheticData;
 
+import org.jgrapht.EdgeFactory;
+
 /**
  *
  * @author Srikanth
  */
-public class Edge {
+public class Edge implements EdgeFactory<Node,Edge>{
        public Node one;
        public Node two;
        public double weight;
@@ -36,14 +38,20 @@ public class Edge {
         this.weight = weight;
     }
     
+    public Edge(Node first, Node second){
+        one = (first.label.compareTo(second.label)<=0)?first: second;
+        two = (one==first) ? second: first;
+        
+    }
+    
     public Node getNeighbour(Node a){
         if(!(one.equals(a)||two.equals(a))) {
             return null;
         }
-        return (one.equals(a))?one:two;
+        return (one.equals(a))?two:one;
     }
     
-    public int getHashCode( ){
+    public int hashCode( ){
         
         return (one.label+two.label).hashCode();
     }
@@ -66,6 +74,13 @@ public class Edge {
         return (edge.one.equals(edge.one)&&edge.two.equals(edge.two));
     }
     
-    
+    public String toString() {
+        return (one.label+" "+two.label);
+    }
+
+    @Override
+    public Edge createEdge(Node v, Node v1) {
+        return new Edge(v,v1);
+    }
     
 }

@@ -15,9 +15,10 @@ public class Graph {
     
    public HashMap<String,Node> vertices = new HashMap<String,Node>(); 
    public HashMap<Integer,Edge> edges = new HashMap<Integer,Edge>();
+   public HashMap<Integer,String> location_vertexmapping = new HashMap<Integer,String>();
    
    public boolean insertEdge(Edge e){
-       edges.put(e.getHashCode(), e);
+       edges.put(e.hashCode(), e);
        return true;
    }
    
