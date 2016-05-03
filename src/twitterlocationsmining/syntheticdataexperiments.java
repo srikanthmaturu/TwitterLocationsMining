@@ -27,7 +27,7 @@ public class syntheticdataexperiments {
         int nxpoints = 500;
         int nypoints = 500;
         int radius = 25;
-        double percent = 0.4;
+        double percent = 0.7;
         int seed = 5;
         String file ="F:\\Google Drive(srikanthmaturu1)\\Final Project";
         
@@ -53,7 +53,7 @@ public class syntheticdataexperiments {
     
     void generateChartFordensity_V_AvgDeviation() throws IOException, InterruptedException {
         String applicationtitle = "Plot of Synthetic Data (Density versus Deviation) ";
-        String chartitle = "Density versus Deviation (Percent hidden: 40%) ";
+        String chartitle = "Density versus Deviation (Percent hidden: 70%) ";
         String xaxislabel = "Density (No of Users per unit area)";
         String yaxislabel = "Deviation of Location Estimator";
         XYSeries avgdevseries = new XYSeries("Average Deviation");
@@ -87,7 +87,7 @@ public class syntheticdataexperiments {
             avgdevseries.add(density*i,avgdev );
             mindevseries.add(density*i, sminer.mindev);
             maxdevseries.add(density*i, sminer.maxdev);
-            perestseries.add(density*i, ((double)sminer.noofestimatedlocs/(double)sminer.noofusershidden));
+            perestseries.add(density*i, 100*((double)sminer.noofestimatedlocs/(double)sminer.noofusershidden));
             
         }
             
