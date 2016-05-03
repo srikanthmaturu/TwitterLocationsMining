@@ -53,12 +53,13 @@ public class syntheticdataexperiments {
     
     void generateChartFordensity_V_AvgDeviation() throws IOException, InterruptedException {
         String applicationtitle = "Plot of Synthetic Data (Density versus Deviation) ";
-        String chartitle = "Density versus Deviation ";
+        String chartitle = "Density versus Deviation (Percent hidden: 40%) ";
         String xaxislabel = "Density (No of Users per unit area)";
         String yaxislabel = "Deviation of Location Estimator";
         XYSeries avgdevseries = new XYSeries("Average Deviation");
         XYSeries mindevseries = new XYSeries("Min Deviation");
         XYSeries maxdevseries = new XYSeries("Max Deviation");
+        XYSeries perestseries = new XYSeries("Percent of Users Locations Estimated");
         
         TwitterLocationsMiningUsingSyntheticData sminer;
         for(int i=1;i<100; i++){
@@ -86,6 +87,7 @@ public class syntheticdataexperiments {
             avgdevseries.add(density*i,avgdev );
             mindevseries.add(density*i, sminer.mindev);
             maxdevseries.add(density*i, sminer.maxdev);
+            perestseries.add(density*i, ((double)sminer.noofestimatedlocs/(double)sminer.noofusershidden));
             
         }
             
@@ -93,7 +95,7 @@ public class syntheticdataexperiments {
         dataset.addSeries(avgdevseries);
         dataset.addSeries(mindevseries);
         dataset.addSeries(maxdevseries);
-        
+        dataset.addSeries(perestseries);
         XYLineChart linechart = new XYLineChart(applicationtitle,chartitle, xaxislabel, yaxislabel, dataset);
         linechart.pack();
         RefineryUtilities.centerFrameOnScreen(linechart);

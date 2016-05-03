@@ -48,7 +48,7 @@ public class TwitterLocationsMiningUsingSyntheticData {
         int nxpoints = 1000;
         int nypoints = 1000;
         int radius = 25;
-        double percent = 0.4;
+        double percent = 0.5;
         int seed = 5;
         TwitterLocationsMiningUsingSyntheticData sminer;
         for(int i=1;i<2; i++){
