@@ -89,6 +89,7 @@ public class JGraphXAdapterDemo
         g.addEdge(v3, v1);
         g.addEdge(v4, v3);
 
+        
         // positioning via jgraphx layouts
         mxCircleLayout layout = new mxCircleLayout(jgxAdapter);
         layout.execute(jgxAdapter.getDefaultParent());

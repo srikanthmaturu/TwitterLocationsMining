@@ -9,6 +9,7 @@ import Logger.LogPrinter;
 import SyntheticData.Edge;
 import SyntheticData.Graph;
 import SyntheticData.GraphVisualizer;
+import SyntheticData.GraphXVisualizer;
 import SyntheticData.Node;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,6 +37,8 @@ public class TwitterLocationsMiningUsingSyntheticData {
     public int noofusershidden;
     public int noofestimatedlocs=0;
     public GraphVisualizer gvis;
+    public double mindev;
+    public double maxdev;
     public TwitterLocationsMiningUsingSyntheticData() {
         graph = new Graph();
     }
@@ -61,12 +64,14 @@ public class TwitterLocationsMiningUsingSyntheticData {
             LogPrinter.printLog("Hiding Percent of Users Locations "+percent);
             sminer.hideSomePercent(percent, seed);
             sminer.estimateUnknownLocations();
-    
+            sminer.computeDeviation();
+            
             LogPrinter.printLog("Density: "+density*i+" Radius: "+radius+" Deviation: "+sminer.avgDeviation()+ " No of Users Hidden: "+sminer.noofusershidden+" No of Users Estimated "
                     + sminer.noofestimatedlocs+" Percent Estimated: "+((double)sminer.noofestimatedlocs/(double)sminer.noofusershidden)+" No of Users Not Estimated: "+(sminer.noofusershidden
                             -sminer.noofestimatedlocs));
             sminer.gvis = new GraphVisualizer(sminer.graph, nxpoints, nypoints);
             sminer.gvis.run();
+            sminer.gvis.saveImage();
         }
     }
     
@@ -344,25 +349,38 @@ public class TwitterLocationsMiningUsingSyntheticData {
        
     }
     
-    public double avgDeviation() {
-        
+    public void computeDeviation() {
+        double min = 1000;
+        double max = -1;
         int count =0;
         double totaldev =0;
         for(Node n: graph.vertices.values()) {
             if(n.locationestimate){
+                double dev = n.deviation;
+             max = max<dev?dev:max;
+             min = min>dev?dev:min;
              totaldev += n.deviation;
              count++;
             }
         }
         if(count!=0){
         avgdeviation = totaldev/count;
-        return avgdeviation;
-        }
-        else{
-            return -1;
+        maxdev = max;
+        mindev = min;
+
         }
     }
     
+    public double avgDeviation() {
+        return avgdeviation;
+    }
+    
+    public double minDeviation() {
+        return mindev;
+    }
+    public double maxDeviation() {
+        return maxdev;
+    }
     
     
     
